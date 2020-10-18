@@ -1,0 +1,9 @@
+form {
+	font-style: italic;
+
+	font-size: x-large;
+}
+
+input:required {
+	background-color: red;
+}
