@@ -1,0 +1,53 @@
+body{
+	background-color: black;
+}
+
+img.pjatk{
+		width: 80%;
+		height: auto;
+
+	//background-color: white;
+	border-style: dashed;
+
+	position: relative;
+
+	left: 10%;
+	right: 10%;
+	top: 5px;
+
+}
+
+div.backgroundImg {
+	width: 1200px;
+	height:900px;
+	border-style: dotted;
+	margin: 0 auto;
+
+	background-size: 100% 100%;
+	background-image: url('img/bukovel.jpg');
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-position: center; 
+}
+
+h1{
+	font-size: 40px;
+	text-decoration: underline;
+	margin-left: 30px;
+}
+
+p{
+	position: relative;
+	padding: 10px;
+	border-style: solid;
+	background-color: #FFFFCC;
+
+}
+
+a:hover{
+	background-color: green;
+}
+
+ul {
+	list-style-type: square;
+}
