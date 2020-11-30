@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    	<title>6b</title>
+  </head>
+    <body>
+        <p id = "p1"> Paragraph 1</p>
+    	<script type="text/javascript">
+    			document.addEventListener('DOMContentLoaded', 
+                    event => {
+                        setTimeout(function() {
+                            var para = document.createElement("p");
+                            var node = document.createTextNode("New paragraph");
+                            para.appendChild(node);
+
+                            var element = document.getElementById("p1");
+                            element.appendChild(para);
+                        }, 5000);
+                    });
+    	</script>
+    </body>
+</html>
