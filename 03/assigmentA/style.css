@@ -1,0 +1,102 @@
+body {
+  width: 100vw;
+  height: 100vh;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+header {
+  margin: 50px 0px;
+  text-align: center;
+}
+
+header > h1 {
+  margin-top: 20px;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+footer {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.headerImage {
+  max-width: 400px;
+  min-height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  transform: rotate(5deg);
+  box-shadow: 10px 10px 20px 1px rgba(0, 0, 0, 0.55);
+}
+
+.container {
+  display: flex;
+}
+
+.gallery {
+  max-width: 200px;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.galleryImage {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+}
+
+.news {
+  display: flex;
+  flex-flow: row wrap;
+  margin-left: 50px;
+}
+
+.column {
+  flex: 1;
+  min-width: 225px;
+  max-height: 700px;
+  overflow: hidden;
+}
+
+.column > h2 {
+  font-size: 1.2rem;
+  color: red;
+  float: right;
+  margin: 20px;
+}
+
+#squirrel_1 {
+  width: 150px;
+  height: 200px;
+  object-fit: cover;
+  float: left;
+}
+
+#squirrel_2 {
+  width: 300px;
+  height: 150px;
+  object-fit: contain;
+  float: left;
+}
+
+
+@media only screen and (max-width: 800px) {
+  .container {
+    flex-direction: column-reverse;
+  }
+
+  .gallery {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: unset;
+    flex-direction: unset;
+  }
+
+  .headerImage {
+    max-width: 300px;
+  }
+}
