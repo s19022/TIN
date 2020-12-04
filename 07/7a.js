@@ -4,10 +4,12 @@ const url = require('url');
 http.createServer(function (req, res) {
 	const queryObject = url.parse(req.url,true).query;
 	console.log(queryObject);
+	let number1;
+	let number2;
 	let result;
 	try{
-		let number1 = parseParameter(queryObject.param1);
-		let number2 = parseParameter(queryObject.param2);
+		number1 = parseParameter(queryObject.param1);
+		number2 = parseParameter(queryObject.param2);
 		
 		result = calculateResult(req.url, number1, number2);
 	}catch(e){
@@ -16,7 +18,18 @@ http.createServer(function (req, res) {
 		return;
 	}
   	res.writeHead(200, {'Content-Type': 'text/html'});
-  	res.end(result + "");
+  	let responseText = "<!DOCTYPE html>" + 
+			"<html>" + 
+				"<head>" +
+					"<title>task7a</title>" + 
+				"</head>" + 
+				"<body>" +
+				"	<p>Request parametr 1: " + number1 + ", parametr 2 :" + number2 + "</p>" + 
+				"	<p>Result : " + result + "</p>" + 
+				"</body>" + 
+			"</html>";
+  	res.end(responseText);
+  	//res.end(result + "");
 }).listen(8080);
 
 function parseParameter(param){	
