@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home Page</title>
+
+</head>
+<body>
+    <%if (status === 'administrator'){ %>
+        <h1 id = 'statusField'> </h1>
+
+        <table cellspacing="5" style="text-align: center">
+            <caption>Here you can add a new item</caption>
+
+            <tr>
+                <td>
+                    <label for = 'itemNameInsert'>Enter name of a new item</label>
+                </td>
+                <td>
+                    <input type="text" maxlength="50" name="itemNameInsert" id = 'itemNameInsert' value="" style="width:193px">
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label for = 'itemPriceInsert'>Enter price of a new item</label>
+                </td>
+                <td>
+                    <input type="number" min = "0" max = "21474836" name="itemPriceInsert" id = 'itemPriceInsert' value="0" style="width:193px">
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2" align="center">
+                    <input type="button" name="addNewItemButton" id = 'addNewItemButton' value="Add new item">
+                </td>
+            </tr>
+        </table>
+        <br>
+        <br>
+        <table cellspacing="5" style="text-align: center">
+            <caption>Here you can change price of existing item </caption>
+
+            <tr>
+                <td>
+                    <label for = 'itemNameUpdate'>Enter name of existing item</label>
+                </td>
+                <td>
+                    <input type="text" maxlength="50" name="itemNameUpdate" id = 'itemNameUpdate' value="" style="width:193px">
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <label for = 'itemPriceUpdate'>Enter new price of an item</label>
+                </td>
+                <td>
+                    <input type="number" min = "0" max = "21474836" name="itemPriceUpdate" id = 'itemPriceUpdate' value="0" style="width:193px">
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2" align="center">
+                    <input type="button" name="updateItemButton" id = 'updateItemButton' value="Change price">
+                </td>
+            </tr>
+        </table>
+        <br>
+        <br>
+        <table cellspacing="5" style="text-align: center">
+            <caption>Here you can delete item</caption>
+
+            <tr>
+                <td>
+                    <label for = 'itemNameDelete'>Enter name of existing item</label>
+                </td>
+                <td>
+                    <input type="text" maxlength="50" name="itemNameDelete" id = 'itemNameDelete' value="" style="width:193px">
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2" align="center">
+                    <input type="button" name="deleteItemButton" id = 'deleteItemButton' value="Delete item">
+                </td>
+            </tr>
+        </table>
+
+
+        <script>
+            document.getElementById('addNewItemButton').addEventListener('click', function (e) {
+                e.preventDefault()
+
+                let itemName = document.getElementById('itemNameInsert').value;
+                let itemPrice = document.getElementById('itemPriceInsert').value;
+
+                if(itemPrice > 21474836){
+                    let _itemName = itemName;
+                    failure('Price should be less then 21474836');
+                    document.getElementById('itemNameInsert').value = _itemName;
+                    return;
+                }
+
+                let data = JSON.stringify({
+                    "itemName" : itemName,
+                    "itemPrice" : itemPrice
+                });
+
+                let request = new XMLHttpRequest();
+                request.open('POST', '/item/add', true)
+                request.setRequestHeader(
+                    'Content-Type',
+                    'application/json'
+                );
+
+                request.send(data);
+                request.onload = function (){
+                    if (request.status === 200){
+                        success('Item successfully added!');
+                        return;
+                    }
+                    if (request.status === 400){
+                        let _itemPrice = itemPrice;
+                        failure('Item with name \"' + itemName +  '\" already exists');
+                        document.getElementById('itemPriceInsert').value = _itemPrice;
+                        return;
+                    }
+                    else{
+                        failure('Item is not added');
+                    }
+                };
+            });
+
+            /*****************************************/
+            //UPDATE
+
+            document.getElementById('updateItemButton').addEventListener('click', function (e) {
+                e.preventDefault()
+
+                let itemName = document.getElementById('itemNameUpdate').value;
+                let itemPrice = document.getElementById('itemPriceUpdate').value;
+
+                if(itemPrice > 21474836){
+                    let _itemName = itemName;
+                    failure('Price should be less then 21474836');
+                    document.getElementById('itemNameUpdate').value = _itemName;
+                    return;
+                }
+
+                let data = JSON.stringify({
+                    "itemName" : itemName,
+                    "itemPrice" : itemPrice
+                });
+
+                let request = new XMLHttpRequest();
+                request.open('POST', '/item/update', true)
+                request.setRequestHeader(
+                    'Content-Type',
+                    'application/json'
+                );
+
+                request.send(data);
+                request.onload = function (){
+                    if (request.status === 200){
+                        success('Price successfully changed!');
+                        return;
+                    }
+                    if (request.status === 400){
+                        let _itemPrice = itemPrice;
+                        failure('Item with name \"' + itemName +  '\" doesn\'t exists');
+                    }
+                    else{
+                        failure('Item is not added');
+                    }
+                };
+            });
+            /*************************************/
+            //DELETE
+
+            document.getElementById('deleteItemButton').addEventListener('click', function (e) {
+                e.preventDefault()
+
+                let data = JSON.stringify({
+                    "itemName" : document.getElementById('itemNameDelete').value
+                });
+
+                let request = new XMLHttpRequest();
+                request.open('POST', '/item/delete', true)
+                request.setRequestHeader(
+                    'Content-Type',
+                    'application/json'
+                );
+
+                request.send(data);
+                request.onload = function (){
+                    if (request.status === 200){
+                        success('Item successfully deleted!');
+                        return;
+                    }
+                    if (request.status === 400){
+                        failure('Item with name \"' + itemName +  '\" doesn\'t exists');
+                    }
+                    else{
+                        failure('Item is not added');
+                    }
+                };
+            });
+    /**********************/
+            function success(message){
+                document.getElementById('itemNameInsert').value = '';
+                document.getElementById('itemPriceInsert').value = '0';
+                document.getElementById('itemNameUpdate').value = '';
+                document.getElementById('itemPriceUpdate').value = '0';
+                document.getElementById('itemNameDelete').value = '';
+
+                let statusField = document.getElementById('statusField');
+                statusField.style.color = 'green';
+                statusField.innerHTML = message;
+
+                setTimeout(() => {statusField.innerHTML = ''}, 3000);
+            }
+
+            function failure(message){
+                document.getElementById('itemNameInsert').value = '';
+                document.getElementById('itemPriceInsert').value = '0';
+                document.getElementById('itemNameUpdate').value = '';
+                document.getElementById('itemPriceUpdate').value = '0';
+                document.getElementById('itemNameDelete').value = '';
+
+                let statusField = document.getElementById('statusField');
+                statusField.style.color = 'red';
+                statusField.innerHTML = message;
+
+                setTimeout(() => {statusField.innerHTML = ''}, 3000);
+            }
+        </script>
+    <%}%>
+
+    <%if (status === 'customer'){ %>
+        <label for = 'deliveryOptions'>Display your orders</label>
+        <select name="deliveryOptions" id = 'deliveryOptions'>
+            <option id = 'all' selected>All</option>
+            <option id = 'delivered'>Delivered</option>
+            <option id = 'notDelivered'>Not delivered</option>
+
+        </select>
+
+        <br>
+        <br>
+        <table id = 'ordersTable' border="1" style="text-align: center"></table>
+        <table id = 'buttonsTable' style="text-align: center"></table>
+
+        <script>
+                const ITEMS_PER_PAGE = 5;
+                let deliveredOrdersCount = 0;
+                let pageNumber = 1;
+                let maxPageNumber = 1;
+                let deliveryOptions =  document.getElementById('deliveryOptions');
+                deliveryOptions.addEventListener('change', function (){
+                   pageNumber = 1;
+                });
+                deliveryOptions.addEventListener('change', changeTable);
+                let orders;
+                const table = document.getElementById('ordersTable');
+
+                let request = new XMLHttpRequest();
+                request.open('GET', '/orders', true)
+                request.setRequestHeader(
+                    'Content-Type',
+                    'application/json'
+                );
+
+                request.send();
+                request.onload = function (){
+                    if (request.status === 200){
+                        let response = JSON.parse(request.response);
+                        orders = response.orders;
+                        orders.forEach(el =>{
+                            if(el.deliveryDate !== null) deliveredOrdersCount++;
+                        });
+                        changeTable();
+                        addButtons();
+                    }
+                };
+
+                function addButtons(){
+                    if (orders.length <= ITEMS_PER_PAGE) return;
+                    const buttonTable = document.getElementById('buttonsTable');
+                    const row = buttonTable.insertRow();
+
+                    const previousPageButton = document.createElement('input');
+                    previousPageButton.type = 'button';
+                    previousPageButton.value = '<-';
+                    let cell = row.insertCell();
+                    cell.appendChild(previousPageButton);
+
+                    const nextPageButton = document.createElement('input');
+                    nextPageButton.type = 'button';
+                    nextPageButton.value = '->';
+                    cell = row.insertCell();
+                    cell.appendChild(nextPageButton);
+
+                    nextPageButton.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        if(pageNumber >= maxPageNumber) return;
+                        pageNumber++;
+                        changeTable();
+                    });
+
+                    previousPageButton.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        if (pageNumber <= 1) return;
+                        pageNumber--;
+                        changeTable();
+                    });
+                }
+
+                function changeTable() {
+                    // e.preventDefault();
+                    if (deliveryOptions.value === 'All'){
+                        maxPageNumber = Math.ceil(orders.length / ITEMS_PER_PAGE);
+                    }
+                    if(deliveryOptions.value === 'Delivered'){
+                        maxPageNumber = Math.ceil(deliveredOrdersCount / ITEMS_PER_PAGE);
+                    }
+                    if (deliveryOptions.value === 'Not delivered'){
+                        maxPageNumber = Math.ceil((orders.length - deliveredOrdersCount)/ ITEMS_PER_PAGE);
+                    }
+                    table.innerHTML = '';
+                    let showDeliveryDate = (deliveryOptions.options.selectedIndex !== 2);
+                    /// create headers
+                    let thead = table.createTHead();
+                    let row = thead.insertRow();
+                    let data = ['Order number', 'Quantity', 'Item name', 'Item price', 'Order date'];
+                    for (let key of data) {
+                        let th = document.createElement("th");
+                        let text = document.createTextNode(key);
+                        th.appendChild(text);
+                        row.appendChild(th);
+                    }
+                    if (showDeliveryDate){
+                        let th = document.createElement("th");
+                        let text = document.createTextNode('Delivery date');
+                        th.appendChild(text);
+                        row.appendChild(th);
+                    }
+                    let displayedItemPosition = 0;
+                    for (let rowNumber = ITEMS_PER_PAGE * (pageNumber - 1);
+                         displayedItemPosition < ITEMS_PER_PAGE && rowNumber < orders.length; rowNumber++){
+                        let data = orders[rowNumber];
+                        if (addRow(data)){
+                            displayedItemPosition++;
+                        }
+                    }
+                }
+
+
+                function addRow(data){
+                    if (deliveryOptions.value === 'Not delivered'){
+                        if (data.deliveryDate !== null)
+                            return false;
+                    }
+                    if (deliveryOptions.value === 'Delivered'){
+                        if (data.deliveryDate === null){
+                            return false;
+                        }
+                    }
+                    let row = table.insertRow();
+
+                    addCell(row, data.orderNumber);
+                    addCell(row, data.quantity);
+                    addCell(row, data.itemName);
+                    addCell(row, data.price.toFixed(2));
+                    addCell(row, (new Date(data.orderDate)).toLocaleString("en-GB"));
+                    if(deliveryOptions.value !== 'Not delivered'){
+                        let deliveryDate = 'not delivered';
+                        if (data.deliveryDate !== null){
+                            deliveryDate =  (new Date(data.deliveryDate)).toLocaleString("en-GB");
+                        }
+                        addCell(row, deliveryDate);
+                    }
+                    return true;
+                }
+
+                function addCell(row, message){
+                    let cell = row.insertCell();
+                    let text = document.createTextNode(message);
+                    cell.appendChild(text);
+                }
+            </script>
+    <%}%>
+
+    <%if (status === 'expiredToken'){ %>
+        <p>Your session has expired, you need to <a href="/login" > re-login</a> or continue as a guest</p>
+    <%}%>
+    <%if (status === 'guest'){ %>
+        <p>If you want to order something, you need to <a href="/login" > login </a> ;)</p>
+    <%}%>
+
+    <%if (status === 'guest' || status === 'expiredToken' || status === 'customer'){ %>
+    <h1 id = 'statusField'> </h1>
+    <table border="1" id = 'productList' style="text-align: center">
+            <caption>List of our products</caption>
+            <tr>
+                <td>Item name</td> <td>Price</td>
+                <%if (status === 'customer'){ %>
+                    <td colspan="3">Order</td>
+                <%}%>
+            </tr>
+            <% for (let i = 0; i < products.length; i++){%>
+                <tr>
+                    <td><%= products[i].itemName %></td>
+                    <td><%= products[i].price.toFixed(2) %></td>
+                    <%if (status === 'customer'){ %>
+                        <td>
+                            <input type="button" value="order" id = "order<%= i %>" onclick="orderClicked(<%= i %>)">
+                        </td>
+
+                        <td>
+                            <input type="button" disabled style="width:39px" value="+" id = "add<%= i %>" onclick="add(<%= i %>)">
+                        </td>
+
+                        <td>
+                            <input type="button" disabled value="-" id = "sub<%= i %>" onclick="sub(<%= i %>)">
+                        </td>
+                    <%}%>
+                </tr>
+            <%}%>
+
+            <%if (status === 'customer'){ %>
+            <tr>
+                <td colspan="5">
+                    <input type="button" id = 'createOrder' value="Create order" onclick="makeOrder()">
+                </td>
+            </tr>
+            <%}%>
+        </table>
+    <script>
+
+        function makeOrder(){
+            const orderTable = document.getElementById('productList');
+            let orderDetails = new Array(0);
+            let position = 0;
+            for (let i = 1; i < orderTable.rows.length - 1; i++){
+                let row = orderTable.rows[i];
+                if(row.cells[2].querySelector('input').type === 'button') continue;
+
+                let item = {
+                    itemName : row.cells[0].innerText,
+                    quantity : row.cells[2].querySelector('input').value
+                }
+                orderDetails.push(item);
+            }
+            sendOrder(orderDetails);
+        }
+
+        function orderClicked(buttonNumber){
+            document.getElementById('add' + buttonNumber).disabled = false
+            document.getElementById('sub' + buttonNumber).disabled = false;
+            let btn = document.getElementById("order" + buttonNumber);
+            btn.value = 1;
+            btn.type = 'number';
+            btn.readOnly = true;
+            btn.style.width = '39px';
+            btn.onclick = undefined;
+
+        }
+
+        function sub(buttonNumber){
+            let field = document.getElementById('order' + buttonNumber);
+            if (field.value == 1){
+                restoreButton(buttonNumber);
+                return;
+            }
+            field.value--;
+        }
+        function add(buttonNumber){
+            let field = document.getElementById('order' + buttonNumber);
+            if (field.value >= 9) return;
+            field.value++;
+        }
+
+        function restoreButton(buttonNumber){
+            let button = document.getElementById('order' + buttonNumber);
+            button.type = 'button';
+            button.value = 'order';
+            button.style.padding = '0px';
+            button.style.width = '39px';
+            button.setAttribute('onClick', 'orderClicked(' + buttonNumber + ')');
+            document.getElementById('add' + buttonNumber).disabled = true;
+            document.getElementById('sub' + buttonNumber).disabled = true;
+        }
+
+        function sendOrder(order) {
+            const statusField = document.getElementById('statusField');
+
+            if(order.length === 0) {
+                // statusField.innerText= 'not added';
+                return;
+            }
+            let request = new XMLHttpRequest();
+            request.open('POST', '/orders', true)
+            request.setRequestHeader(
+                'Content-Type',
+                'application/json'
+            );
+
+            let data = JSON.stringify({
+                "newOrder" : order
+            });
+
+
+            request.send(data);
+            request.onload = function () {
+                if(request.status === 401){
+                    statusField.style.color = 'blue';
+                    statusField.innerHTML = 'Your session has expired, redirecting to login page...';
+                    setTimeout(() => {window.location.href = '/login'}, 1500);
+                    return;
+                }
+                if (request.status === 200) {
+                    statusField.style.color = 'green';
+                    statusField.innerHTML = 'Order added!'
+                    setTimeout(() => {document.location.reload()}, 1500);
+                }else {
+                    statusField.style.color = 'red';
+                    statusField.innerHTML = 'Something went wrong'
+
+                }
+            }
+        }
+
+    </script>
+    <%}%>
+
+
+</body>
+</html>

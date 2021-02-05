@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+    <body>
+    <table>
+        <tr>
+            <td> <label for="login">Login</label></td>
+            <td><input type="text" id="login" name="login"></td>
+        </tr>
+
+        <tr>
+            <td><label for = "password">Password</label></td>
+            <td><input type="password" id = "password" name="password"></td>
+            <td><input type="checkbox" id = 'showPassword' >Show Password</td>
+        </tr>
+
+        <tr>
+            <td><label for = "passwordRepeated">Password again</label></td>
+            <td><input type="password" id = "passwordRepeated" name="passwordRepeated"></td>
+        </tr>
+
+        <tr>
+            <td><input type="button" name="btn" value="Create user" id="submit"></td>
+        </tr>
+
+        <tr>
+            <td colspan="3"><p id = 'errorField' style="color: red; font-style: italic"></p></td>
+        </tr>
+    </table>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/core.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.js"></script>
+
+        <script>
+            document
+                .getElementById('showPassword')
+                .addEventListener('click', function (e) {
+                    let x = document.getElementById("password");
+                    if (x.type === "password") {
+                        x.type = "text";
+                    } else {
+                        x.type = "password";
+                    }
+                });
+
+            document
+                .getElementById('showPassword')
+                .addEventListener('click', function (e) {
+                    let x = document.getElementById("passwordRepeated");
+                    if (x.type === "password") {
+                        x.type = "text";
+                    } else {
+                        x.type = "password";
+                    }
+                });
+
+            document
+                .getElementById('submit')
+                .addEventListener('click', function (e) {
+                    e.preventDefault()
+
+                    let login = document.getElementById('login').value;
+                    let password = document.getElementById('password').value;
+                    let passwordRepeated = document.getElementById('passwordRepeated').value;
+                    let errorField = document.getElementById('errorField');
+
+                    if (login === ''){
+                        errorField.innerText = 'Login field is empty';
+                        return;
+                    }
+                    if (password === ''){
+                        errorField.innerText = 'Password field is empty';
+                        return;
+                    }
+
+                    if (passwordRepeated === ''){
+                        errorField.innerText = 'Password repeated field is empty';
+                        return;
+                    }
+
+                    if (password !== passwordRepeated){
+                        errorField.innerText = "Password\'s don\'t match ";
+                        return;
+                    }
+                    errorField.innerText = '';
+
+                    let passwordHash = CryptoJS.MD5(password).toString().toUpperCase();
+
+                    let data = JSON.stringify({
+                        "login" : login,
+                        "password" : passwordHash,
+                        "firstName" : null,
+                        "lastName" : null
+                    });
+
+                    let request = new XMLHttpRequest();
+
+                    request.open('POST', '/register', true)
+                    request.setRequestHeader(
+                        'Content-Type',
+                        'application/json'
+                    );
+
+                    request.send(data);
+
+                    console.log("sent to serv");
+                    request.onload = function (){
+                        if (request.status === 200){
+                            window.location.href = request.responseURL;
+                            return;
+                        }
+                        if (request.status === 400){
+                            errorField.innerText = 'This login already taken';
+                            return;
+                        }
+                        console.log(request.response);
+
+                    };
+                });
+        </script>
+
+    </body>
+</html>
