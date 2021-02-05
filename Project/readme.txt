@@ -40,4 +40,7 @@ item.js
 	the name of the item is unique
 
 
-after any comunication of a logged user with the db validity of token is prolonged fro 15 minutes
+after any comunication of a logged user with the db validity of token is prolonged for 15 minutes
+
+
+db.js is a wrapper of database functions and procedures
